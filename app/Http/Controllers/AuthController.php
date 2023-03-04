@@ -2,12 +2,12 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Register;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\ValidationException;
+use Symfony\Component\HttpFoundation\Response;
 
 class AuthController extends Controller
 {
@@ -47,5 +47,19 @@ class AuthController extends Controller
             'password.min' => 'password minimal 6',
             'email.unique' => 'email sudah digunakan',
         ]);
+
+        $users = User::create([
+            'nama' => $request->nama,
+            'no_hp' => $request->password,
+            'email' => $request->email,
+            'password' => bcrypt($request->password),
+            'role_id' => $request->role_id
+        ]);
+
+        return response()->json([
+            'success' => true,
+            'message' => 'user created',
+            'data' => $users
+        ], Response::HTTP_OK);
     }
 }
