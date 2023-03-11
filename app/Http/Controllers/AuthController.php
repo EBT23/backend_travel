@@ -39,27 +39,17 @@ class AuthController extends Controller
     {
         $validated = $request->validate([
             'nama' => 'required',
-            'no_hp' => 'required',
-            'email' => 'required|string|email|unique:users,email',
-            'password' => 'required|string|min:6',
-            'role_id' => 'required',
-        ], [
-            'password.min' => 'password minimal 6',
-            'email.unique' => 'email sudah digunakan',
         ]);
 
-        $users = User::create([
-            'nama' => $request->nama,
-            'no_hp' => $request->password,
-            'email' => $request->email,
-            'password' => bcrypt($request->password),
-            'role_id' => $request->role_id
-        ]);
+        // simpan data ke database
+        $data = new User;
+        $data->nama = $validated['nama'];
+        $data->save();
 
+        // kirim response
         return response()->json([
-            'success' => true,
-            'message' => 'user created',
-            'data' => $users
-        ], Response::HTTP_OK);
+            'status' => 'success',
+            'message' => 'Data berhasil disimpan'
+        ]);
     }
 }

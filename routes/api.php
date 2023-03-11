@@ -10,11 +10,36 @@ use Illuminate\Support\Facades\Route;
 Route::post('/login', [AuthController::class, 'login']);
 Route::post('/register', [AuthController::class, 'register']);
 
+// KOTA
+Route::get('/kota', [Admin::class, 'kota']);
+
+// TEMPAT AGEN
+Route::get('/tempat_agen', [Admin::class, 'tempat_agen']);
+
+
 Route::middleware(['auth:sanctum'])->group(function () {
     Route::get('/logout', [AuthController::class, 'logout']);
     Route::get('/me', [AuthController::class, 'me']);
+
+    //ROLE
     Route::get('/role', [Admin::class, 'role']);
     Route::post('/tambah_role', [Admin::class, 'tambah_role']);
     Route::put('/update_role/{id}', [Admin::class, 'update_role']);
     Route::delete('/delete_role/{id}', [Admin::class, 'delete_role']);
+
+    //SUPIR
+    Route::get('/supir', [Admin::class, 'supir']);
+    Route::post('/tambah_supir', [Admin::class, 'tambah_supir']);
+    Route::put('/update_supir/{id}', [Admin::class, 'update_supir']);
+    Route::delete('/delete_supir/{id}', [Admin::class, 'delete_supir']);
+
+    // KOTA
+    Route::post('/tambah_kota', [Admin::class, 'tambah_kota']);
+    Route::put('/update_kota/{id}', [Admin::class, 'update_kota']);
+    Route::delete('/delete_kota/{id}', [Admin::class, 'delete_kota']);
+
+    // TEMPAT AGEN
+    Route::post('/tambah_tempat_agen', [Admin::class, 'tambah_tempat_agen']);
+    Route::put('/update_tempat_agen/{id}', [Admin::class, 'update_tempat_agen']);
+    Route::delete('/delete_tempat_agen/{id}', [Admin::class, 'delete_tempat_agen']);
 });
