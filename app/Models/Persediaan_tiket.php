@@ -16,5 +16,7 @@ class Persediaan_tiket extends Model
         'asal',
         'tujuan',
         'kuota',
+        'estimasi_perjalanan',
+        'harga'
     ];
 }

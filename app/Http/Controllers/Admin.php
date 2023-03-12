@@ -9,6 +9,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Symfony\Component\HttpFoundation\Response;
 use App\Models\Kota;
+use App\Models\Pemesanan;
 use App\Models\TempatAgen;
 use App\Models\User;
 
@@ -60,7 +61,10 @@ class Admin extends Controller
             ->select('shuttle.id', 'jenis_mobil.jenis_mobil', 'fasilitas.nama_fasilitas')
             ->get();
 
-        return response()->json($shuttle);
+        return response()->json([
+            'success' => true,
+            'data' => $shuttle
+        ]);
     }
     public function tambah_shuttle(Request $request)
     {
@@ -129,6 +133,8 @@ class Admin extends Controller
             'asal' => 'required',
             'tujuan' => 'required',
             'kuota' => 'required',
+            'estimasi_perjalanan' => 'required',
+            'harga' => 'required',
         ]);
 
         $persediaan_tiket = DB::table('persediaan_tiket')->insert([
@@ -136,6 +142,8 @@ class Admin extends Controller
             'asal' => $request->asal,
             'tujuan' => $request->tujuan,
             'kuota' => $request->kuota,
+            'estimasi_perjalanan' => $request->estimasi_perjalanan,
+            'harga' => $request->harga,
         ]);
 
         return response()->json([
@@ -143,6 +151,26 @@ class Admin extends Controller
             'message' => 'Persediaan tiket berhasil dibuat',
             'data' => $persediaan_tiket
         ], Response::HTTP_OK);
+    }
+    public function update_persediaan_tiket(Request $request, $id)
+    {
+        $persediaan_tiket = Persediaan_tiket::findOrFail($id);
+        $persediaan_tiket->update($request->all());
+        return response()->json([
+            'success' => true,
+            'message' => 'Persediaan tiket berhasil dirubah',
+            'data' => $persediaan_tiket
+        ]);
+    }
+    public function delete_persediaan_tiket($id)
+    {
+        $persediaan_tiket = Persediaan_tiket::findOrFail($id);
+        $persediaan_tiket->delete();
+        return response()->json([
+            'success' => true,
+            'message' => 'Persediaan tiket berhasil dihapus',
+            'data' => $persediaan_tiket
+        ]);
     }
     // Supir
     public function supir()
@@ -309,5 +337,40 @@ class Admin extends Controller
         $tmagen = TempatAgen::findOrFail($id);
         $tmagen->delete();
         return response()->json(null, 204);
+    }
+
+    public function pemesanan()
+    {
+        $pemesanan = Pemesanan::all();
+        return response()->json([
+            'status' => true,
+            'data' => $pemesanan
+        ], Response::HTTP_OK);
+    }
+    public function tambah_pemesanan(Request $request)
+    {
+        $validated = $request->validate([
+            'id_persediaan' => 'required',
+            'nama_pemesan' => 'required',
+            'email' => 'required',
+            'no_hp' => 'required',
+            'alamat' => 'required',
+            'nama_penumpang' => 'required',
+        ]);
+
+        $pemesanan = DB::table('pemesanan')->insert([
+            'id_persediaan' => $request->id_persediaan,
+            'nama_pemesan' => $request->nama_pemesan,
+            'email' => $request->email,
+            'no_hp' => $request->no_hp,
+            'alamat' => $request->alamat,
+            'nama_penumpang' => $request->nama_penumpang,
+        ]);
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Tiket berhasil dipesan',
+            'data' => $pemesanan
+        ], Response::HTTP_OK);
     }
 }
