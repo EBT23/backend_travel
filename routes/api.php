@@ -17,4 +17,10 @@ Route::middleware(['auth:sanctum'])->group(function () {
     Route::post('/tambah_role', [Admin::class, 'tambah_role']);
     Route::put('/update_role/{id}', [Admin::class, 'update_role']);
     Route::delete('/delete_role/{id}', [Admin::class, 'delete_role']);
+    Route::get('/shuttle', [Admin::class, 'shuttle']);
+    Route::post('/tambah_shuttle', [Admin::class, 'tambah_shuttle']);
+    Route::put('/update_shuttle/{id}', [Admin::class, 'update_shuttle']);
+    Route::delete('/delete_shuttle/{id}', [Admin::class, 'delete_shuttle']);
+    Route::get('/persediaan_tiket', [Admin::class, 'persediaan_tiket']);
+    Route::post('/tambah_persediaan_tiket', [Admin::class, 'tambah_persediaan_tiket']);
 });
