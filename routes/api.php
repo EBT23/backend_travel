@@ -10,9 +10,18 @@ use Illuminate\Support\Facades\Route;
 Route::post('/login', [AuthController::class, 'login']);
 Route::post('/register', [AuthController::class, 'register']);
 
+// KOTA
+Route::get('/kota', [Admin::class, 'kota']);
+
+// TEMPAT AGEN
+Route::get('/tempat_agen', [Admin::class, 'tempat_agen']);
+
+
 Route::middleware(['auth:sanctum'])->group(function () {
     Route::get('/logout', [AuthController::class, 'logout']);
     Route::get('/me', [AuthController::class, 'me']);
+
+    //ROLE
     Route::get('/role', [Admin::class, 'role']);
     Route::post('/tambah_role', [Admin::class, 'tambah_role']);
     Route::put('/update_role/{id}', [Admin::class, 'update_role']);
