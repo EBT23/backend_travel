@@ -373,4 +373,21 @@ class Admin extends Controller
             'data' => $pemesanan
         ], Response::HTTP_OK);
     }
+    public function cek_persediaan(Request $request)
+    {
+        $asal = $request->input('asal');
+        $tujuan = $request->input('tujuan');
+        $tgl_keberangkatan = date('Y-m-d', strtotime($request->input('tgl_keberangkatan')));
+
+        $persediaan_tiket = Persediaan_tiket::where('asal', $asal)
+            ->where('tujuan', $tujuan)
+            ->where('tgl_keberangkatan', 'like', '%' . $tgl_keberangkatan . '%')
+            ->get();
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Data tersedia',
+            'data' => $persediaan_tiket
+        ], Response::HTTP_OK);
+    }
 }

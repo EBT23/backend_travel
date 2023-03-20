@@ -16,6 +16,14 @@ Route::get('/kota', [Admin::class, 'kota']);
 // TEMPAT AGEN
 Route::get('/tempat_agen', [Admin::class, 'tempat_agen']);
 
+//cek persediaan tiket
+Route::post('/cek_persediaan_tiket', [Admin::class, 'cek_persediaan']);
+
+//PEMESANAN
+Route::get('/pemesanan', [Admin::class, 'pemesanan']);
+Route::post('/tambah_pemesanan', [Admin::class, 'tambah_pemesanan']);
+Route::delete('/delete_pemesanan', [Admin::class, 'delete_pemesanan']);
+
 
 Route::middleware(['auth:sanctum'])->group(function () {
     Route::get('/logout', [AuthController::class, 'logout']);
@@ -52,9 +60,4 @@ Route::middleware(['auth:sanctum'])->group(function () {
     Route::post('/tambah_tempat_agen', [Admin::class, 'tambah_tempat_agen']);
     Route::put('/update_tempat_agen/{id}', [Admin::class, 'update_tempat_agen']);
     Route::delete('/delete_tempat_agen/{id}', [Admin::class, 'delete_tempat_agen']);
-
-    //PEMESANAN
-    Route::get('/pemesanan', [Admin::class, 'pemesanan']);
-    Route::post('/tambah_pemesanan', [Admin::class, 'tambah_pemesanan']);
-    Route::delete('/delete_pemesanan', [Admin::class, 'delete_pemesanan']);
 });
