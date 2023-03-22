@@ -379,7 +379,11 @@ class Admin extends Controller
         $tujuan = $request->input('tujuan');
         $tgl_keberangkatan = date('Y-m-d', strtotime($request->input('tgl_keberangkatan')));
 
-        $persediaan_tiket = Persediaan_tiket::where('asal', $asal)
+        $persediaan_tiket = DB::table('persediaan_tiket')
+            ->join('tempat_agen AS t', 't.id', '=', 'persediaan_tiket.asal')
+            ->join('tempat_agen', 'tempat_agen.id', '=', 'persediaan_tiket.tujuan')
+            ->select('persediaan_tiket.tgl_keberangkatan', 'persediaan_tiket.kuota', 'persediaan_tiket.estimasi_perjalanan', 'persediaan_tiket.harga', 't.tempat_agen AS asal', 'tempat_agen.tempat_agen AS tujuan')
+            ->where('asal', $asal)
             ->where('tujuan', $tujuan)
             ->where('tgl_keberangkatan', 'like', '%' . $tgl_keberangkatan . '%')
             ->get();
