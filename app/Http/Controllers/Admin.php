@@ -119,7 +119,11 @@ class Admin extends Controller
     }
     public function persediaan_tiket()
     {
-        $persediaan_tiket = Persediaan_tiket::all();
+        $persediaan_tiket = DB::table('persediaan_tiket')
+            ->join('tempat_agen AS t', 't.id', '=', 'persediaan_tiket.asal')
+            ->join('tempat_agen', 'tempat_agen.id', '=', 'persediaan_tiket.tujuan')
+            ->select('persediaan_tiket.id', 'persediaan_tiket.tgl_keberangkatan', 'persediaan_tiket.tgl_keberangkatan', 'persediaan_tiket.kuota', 'persediaan_tiket.estimasi_perjalanan', 'persediaan_tiket.harga', 't.tempat_agen AS asal', 'tempat_agen.tempat_agen AS tujuan')
+            ->get();
         return response()->json([
             'success' => true,
             'message' => 'Data berhasil ditampilkan',
