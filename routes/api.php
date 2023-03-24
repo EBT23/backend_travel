@@ -34,16 +34,19 @@ Route::middleware(['auth:sanctum'])->group(function () {
     Route::post('/tambah_role', [Admin::class, 'tambah_role']);
     Route::put('/update_role/{id}', [Admin::class, 'update_role']);
     Route::delete('/delete_role/{id}', [Admin::class, 'delete_role']);
+    Route::get('/get_role/{id}', [Admin::class, 'get_role']);
     //SHUTTLE
     Route::get('/shuttle', [Admin::class, 'shuttle']);
     Route::post('/tambah_shuttle', [Admin::class, 'tambah_shuttle']);
     Route::put('/update_shuttle/{id}', [Admin::class, 'update_shuttle']);
     Route::delete('/delete_shuttle/{id}', [Admin::class, 'delete_shuttle']);
+    Route::get('/get_shuttle/{id}', [Admin::class, 'get_shuttle']);
     //PERSEDIAAN TIKET
     Route::get('/persediaan_tiket', [Admin::class, 'persediaan_tiket']);
     Route::post('/tambah_persediaan_tiket', [Admin::class, 'tambah_persediaan_tiket']);
     Route::put('/update_persediaan_tiket/{id}', [Admin::class, 'update_persediaan_tiket']);
     Route::delete('/delete_persediaan_tiket/{id}', [Admin::class, 'delete_persediaan_tiket']);
+    Route::get('/get_persediaan/{id}', [Admin::class, 'get_persediaan']);
 
     //SUPIR
     Route::get('/supir', [Admin::class, 'supir']);
@@ -55,9 +58,11 @@ Route::middleware(['auth:sanctum'])->group(function () {
     Route::post('/tambah_kota', [Admin::class, 'tambah_kota']);
     Route::put('/update_kota/{id}', [Admin::class, 'update_kota']);
     Route::delete('/delete_kota/{id}', [Admin::class, 'delete_kota']);
+    Route::get('/get_kota/{id}', [Admin::class, 'get_kota']);
 
     // TEMPAT AGEN
     Route::post('/tambah_tempat_agen', [Admin::class, 'tambah_tempat_agen']);
     Route::put('/update_tempat_agen/{id}', [Admin::class, 'update_tempat_agen']);
     Route::delete('/delete_tempat_agen/{id}', [Admin::class, 'delete_tempat_agen']);
+    Route::get('/get_tempat_agen/{id}', [Admin::class, 'get_tempat_agen']);
 });

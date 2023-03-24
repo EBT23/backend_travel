@@ -398,4 +398,62 @@ class Admin extends Controller
             'data' => $persediaan_tiket
         ], Response::HTTP_OK);
     }
+    public function get_persediaan($id)
+    {
+        $persediaan_tiket = DB::table('persediaan_tiket')
+            ->join('tempat_agen AS t', 't.id', '=', 'persediaan_tiket.asal')
+            ->join('tempat_agen', 'tempat_agen.id', '=', 'persediaan_tiket.tujuan')
+            ->where('persediaan_tiket.id', '=', $id)
+            ->select('persediaan_tiket.id', 'persediaan_tiket.tgl_keberangkatan', 'persediaan_tiket.tgl_keberangkatan', 'persediaan_tiket.kuota', 'persediaan_tiket.estimasi_perjalanan', 'persediaan_tiket.harga', 't.tempat_agen AS asal', 'tempat_agen.tempat_agen AS tujuan')
+            ->get();
+        return response()->json([
+            'success' => true,
+            'message' => 'Data berhasil ditampilkan',
+            'data' => $persediaan_tiket
+        ]);
+    }
+    public function get_shuttle($id)
+    {
+        $shuttle = DB::table('shuttle')
+            ->join('jenis_mobil', 'shuttle.id_jenis_mobil', '=', 'jenis_mobil.id')
+            ->join('fasilitas', 'shuttle.id_fasilitas', '=', 'fasilitas.id')
+            ->where('shuttle.id', '=', $id)
+            ->select('shuttle.id', 'jenis_mobil.jenis_mobil', 'fasilitas.nama_fasilitas')
+            ->get();
+
+        return response()->json([
+            'success' => true,
+            'data' => $shuttle
+        ]);
+    }
+    public function get_role($id)
+    {
+        $role = DB::table('roles')->where('roles.id', '=', $id)
+            ->select('roles.id', 'roles.roles')
+            ->get();
+        return response()->json([
+            'success' => true,
+            'data' => $role
+        ]);
+    }
+    public function get_kota($id)
+    {
+        $kota = DB::table('kota')->where('kota.id', '=', $id)
+            ->select('kota.id', 'kota.nama_kota')
+            ->get();
+        return response()->json([
+            'success' => true,
+            'data' => $kota
+        ]);
+    }
+    public function get_tempat_agen($id)
+    {
+        $kota = DB::table('tempat_agen')->where('tempat_agen.id', '=', $id)
+            ->select('tempat_agen.id', 'tempat_agen.tempat_agen')
+            ->get();
+        return response()->json([
+            'success' => true,
+            'data' => $kota
+        ]);
+    }
 }
