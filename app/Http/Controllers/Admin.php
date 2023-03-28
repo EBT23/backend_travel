@@ -299,7 +299,10 @@ class Admin extends Controller
 
     public function tempat_agen()
     {
-        $tmagen = TempatAgen::all();
+        $tmagen = DB::table('tempat_agen')
+        ->join('kota', 'kota.id', '=', 'tempat_agen.kota_id')
+        ->select('tempat_agen.id', 'kota.nama_kota', 'tempat_agen.tempat_agen')
+        ->get();
         return response()->json([
             'data' => $tmagen
         ]);
