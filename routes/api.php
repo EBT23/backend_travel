@@ -24,10 +24,15 @@ Route::get('/pemesanan', [Admin::class, 'pemesanan']);
 Route::post('/tambah_pemesanan', [Admin::class, 'tambah_pemesanan']);
 Route::delete('/delete_pemesanan', [Admin::class, 'delete_pemesanan']);
 
+Route::post('/riwayat_tiket', [Admin::class, 'riwayat_tiket']);
+
 
 Route::middleware(['auth:sanctum'])->group(function () {
     Route::get('/logout', [AuthController::class, 'logout']);
     Route::get('/me', [AuthController::class, 'me']);
+    
+    //PROFILE
+    Route::post('/profile', [Admin::class, 'profile']);
 
     //ROLE
     Route::get('/role', [Admin::class, 'role']);
