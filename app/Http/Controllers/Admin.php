@@ -299,7 +299,7 @@ class Admin extends Controller
 
     public function tempat_agen()
     {
-        $tmagen = DB::table('tempat_agen')
+         $tmagen = DB::table('tempat_agen')
         ->join('kota', 'kota.id', '=', 'tempat_agen.kota_id')
         ->select('tempat_agen.id', 'kota.nama_kota', 'tempat_agen.tempat_agen')
         ->get();
@@ -363,7 +363,15 @@ class Admin extends Controller
             'no_hp' => 'required',
             
         ]);
-
+        $cekStock = DB::table('persediaan_tiket')->where('id', $request->id_persediaan_tiket)->first();
+        if($cekStock->kuota == 0) {
+            return response()->json([
+            'success' => false,
+            'message' => 'Tiket Josong',
+        ], Response::HTTP_OK);
+        } else {
+            
+        
         $pemesanan = DB::table('pemesanan')->insert([
             'id_persediaan_tiket' => $request->id_persediaan_tiket,
             'id_user' => $request->id_user,
@@ -374,12 +382,20 @@ class Admin extends Controller
             'order_id' => $request->order_id,
             'redirect_url' => $request->redirect_url
         ]);
+       
+       
+        $datapersediaan = [
+            'kuota' => $cekStock->kuota - 1
+            ];
+        
+        $updateStock = DB::table('persediaan_tiket')->where('id', $request->id_persediaan_tiket)->update($datapersediaan);
 
         return response()->json([
             'success' => true,
             'message' => 'Tiket berhasil dipesan',
             'data' => $pemesanan
         ], Response::HTTP_OK);
+        }
     }
     public function cek_persediaan(Request $request)
     {
