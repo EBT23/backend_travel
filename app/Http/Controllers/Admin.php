@@ -298,13 +298,15 @@ class Admin extends Controller
     // TEMPAT AGEN
 
     public function tempat_agen()
-    {
+    {   
+        $kota = Kota::all();
         $tmagen = DB::table('tempat_agen')
         ->join('kota', 'kota.id', '=', 'tempat_agen.kota_id')
         ->select('tempat_agen.id', 'kota.nama_kota', 'tempat_agen.tempat_agen')
         ->get();
         return response()->json([
-            'data' => $tmagen
+            'data' => $tmagen,
+            'kota' => $kota
         ]);
     }
 
@@ -421,7 +423,7 @@ class Admin extends Controller
             ->join('jenis_mobil', 'shuttle.id_jenis_mobil', '=', 'jenis_mobil.id')
             ->join('fasilitas', 'shuttle.id_fasilitas', '=', 'fasilitas.id')
             ->where('shuttle.id', '=', $id)
-            ->select('shuttle.id', 'jenis_mobil.jenis_mobil', 'fasilitas.nama_fasilitas')
+            ->select('shuttle.id', 'shuttle.id_jenis_mobil','shuttle.id_fasilitas', 'jenis_mobil.jenis_mobil', 'fasilitas.nama_fasilitas')
             ->get();
 
         return response()->json([
@@ -432,6 +434,7 @@ class Admin extends Controller
     public function get_role($id)
     {
         $role = DB::table('roles')->where('roles.id', '=', $id)
+        
             ->select('roles.id', 'roles.roles')
             ->get();
         return response()->json([
@@ -452,7 +455,8 @@ class Admin extends Controller
     public function get_tempat_agen($id)
     {
         $kota = DB::table('tempat_agen')->where('tempat_agen.id', '=', $id)
-            ->select('tempat_agen.id', 'tempat_agen.tempat_agen')
+            ->join('kota', 'tempat_agen.kota_id', '=', 'kota.id')
+            ->select('tempat_agen.id', 'tempat_agen.kota_id','kota.nama_kota', 'tempat_agen.tempat_agen')
             ->get();
         return response()->json([
             'success' => true,
