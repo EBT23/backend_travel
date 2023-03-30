@@ -490,7 +490,7 @@ WHERE 1=1 $andemail  $and");
 
         $profile = DB::table('users')
             ->where('email', $email)
-            ->get();
+            ->first();
 
         return response()->json([
             'success' => true,
