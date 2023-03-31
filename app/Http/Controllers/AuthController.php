@@ -29,7 +29,8 @@ class AuthController extends Controller
         return response()->json([
             'success' => true,
             'message' => 'Login berhasil',
-            'data' => $token
+            'data' => $token,
+            'user' => $user,
         ]);
     }
     public function logout(Request $request)
@@ -53,6 +54,10 @@ class AuthController extends Controller
         // simpan data ke database
         $data = new User;
         $data->nama = $validated['nama'];
+        $data->email = $request->email;
+        $data->password = Hash::make($request->password);
+        $data->no_hp = $request->no_hp;
+        $data->role_id = 2;
         $data->save();
 
         // kirim response

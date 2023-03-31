@@ -298,7 +298,7 @@ class Admin extends Controller
     // TEMPAT AGEN
 
     public function tempat_agen()
-    {   
+    {
         $kota = Kota::all();
         $tmagen = DB::table('tempat_agen')
         ->join('kota', 'kota.id', '=', 'tempat_agen.kota_id')
@@ -359,28 +359,45 @@ class Admin extends Controller
     public function tambah_pemesanan(Request $request)
     {
         $validated = $request->validate([
-            'id_persediaan' => 'required',
+            'id_persediaan_tiket' => 'required',
             'nama_pemesan' => 'required',
             'email' => 'required',
             'no_hp' => 'required',
-            'alamat' => 'required',
-            'nama_penumpang' => 'required',
+            
         ]);
-
+        $cekStock = DB::table('persediaan_tiket')->where('id', $request->id_persediaan_tiket)->first();
+        if($cekStock->kuota == 0) {
+            return response()->json([
+            'success' => false,
+            'message' => 'Tiket Josong',
+        ], Response::HTTP_OK);
+        } else {
+            
+        
         $pemesanan = DB::table('pemesanan')->insert([
-            'id_persediaan' => $request->id_persediaan,
+            'id_persediaan_tiket' => $request->id_persediaan_tiket,
+            'id_user' => $request->id_user,
             'nama_pemesan' => $request->nama_pemesan,
             'email' => $request->email,
             'no_hp' => $request->no_hp,
-            'alamat' => $request->alamat,
-            'nama_penumpang' => $request->nama_penumpang,
+            'status' => $request->status,
+            'order_id' => $request->order_id,
+            'redirect_url' => $request->redirect_url
         ]);
+       
+       
+        $datapersediaan = [
+            'kuota' => $cekStock->kuota - 1
+            ];
+        
+        $updateStock = DB::table('persediaan_tiket')->where('id', $request->id_persediaan_tiket)->update($datapersediaan);
 
         return response()->json([
             'success' => true,
             'message' => 'Tiket berhasil dipesan',
             'data' => $pemesanan
         ], Response::HTTP_OK);
+        }
     }
     public function cek_persediaan(Request $request)
     {
@@ -391,7 +408,7 @@ class Admin extends Controller
         $persediaan_tiket = DB::table('persediaan_tiket')
             ->join('tempat_agen AS t', 't.id', '=', 'persediaan_tiket.asal')
             ->join('tempat_agen', 'tempat_agen.id', '=', 'persediaan_tiket.tujuan')
-            ->select('persediaan_tiket.tgl_keberangkatan', 'persediaan_tiket.kuota', 'persediaan_tiket.estimasi_perjalanan', 'persediaan_tiket.harga', 't.tempat_agen AS asal', 'tempat_agen.tempat_agen AS tujuan')
+            ->select('persediaan_tiket.id','persediaan_tiket.tgl_keberangkatan', 'persediaan_tiket.kuota', 'persediaan_tiket.estimasi_perjalanan', 'persediaan_tiket.harga', 't.tempat_agen AS asal', 'tempat_agen.tempat_agen AS tujuan')
             ->where('asal', $asal)
             ->where('tujuan', $tujuan)
             ->where('tgl_keberangkatan', 'like', '%' . $tgl_keberangkatan . '%')
@@ -462,5 +479,46 @@ class Admin extends Controller
             'success' => true,
             'data' => $kota
         ]);
+    }
+    public function riwayat_tiket(Request $request)
+    {
+        $email= $request->input('email');
+        $id_user= $request->input('id_user');
+        $and = "";
+        $andemail = "";
+        if(isset($id_user)){
+        $and = "and p.id_user = '$id_user'";
+        }
+        // if(isset($email)){
+        // $andemail = "and p.email like ('%$email%')";
+        // }
+
+       
+        $riwayat_tiket= DB::select("SELECT p.*, pt.tgl_keberangkatan, pt.kuota, pt.estimasi_perjalanan, pt.harga, ta.tempat_agen as asal, tt.tempat_agen as tujuan FROM pemesanan p 
+LEFT JOIN persediaan_tiket pt on p.id_persediaan_tiket=pt.id
+LEFT JOIN tempat_agen ta on pt.asal=ta.id
+LEFT JOIN tempat_agen tt on pt.tujuan=tt.id
+WHERE 1=1 $andemail  $and");
+          
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Data tersedia',
+            'data' => $riwayat_tiket
+        ], Response::HTTP_OK);
+    }
+    public function profile(Request $request)
+    {
+        $email = $request->input('email');
+
+        $profile = DB::table('users')
+            ->where('email', $email)
+            ->first();
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Data tersedia',
+            'data' => $profile
+        ], Response::HTTP_OK);
     }
 }
