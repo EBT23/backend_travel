@@ -26,6 +26,12 @@ Route::delete('/delete_pemesanan', [Admin::class, 'delete_pemesanan']);
 
 Route::post('/riwayat_tiket', [Admin::class, 'riwayat_tiket']);
 
+Route::post('/cek_transaksi', [Admin::class, 'cek_transaksi']);
+Route::post('/cetak_tiket', [Admin::class, 'cetak_tiket']);
+
+Route::post('/updateTransaksi', [Admin::class, 'updateTransaksi']);
+
+
 
 Route::middleware(['auth:sanctum'])->group(function () {
     Route::get('/logout', [AuthController::class, 'logout']);
