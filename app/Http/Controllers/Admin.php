@@ -436,7 +436,7 @@ class Admin extends Controller
     }
     public function get_shuttle($id)
     {
-        $shuttle = DB::table('shuttle')
+         $shuttle = DB::table('shuttle')
             ->join('jenis_mobil', 'shuttle.id_jenis_mobil', '=', 'jenis_mobil.id')
             ->join('fasilitas', 'shuttle.id_fasilitas', '=', 'fasilitas.id')
             ->where('shuttle.id', '=', $id)
@@ -451,7 +451,6 @@ class Admin extends Controller
     public function get_role($id)
     {
         $role = DB::table('roles')->where('roles.id', '=', $id)
-        
             ->select('roles.id', 'roles.roles')
             ->get();
         return response()->json([
@@ -471,8 +470,9 @@ class Admin extends Controller
     }
     public function get_tempat_agen($id)
     {
-        $kota = DB::table('tempat_agen')->where('tempat_agen.id', '=', $id)
+        $kota = DB::table('tempat_agen')
             ->join('kota', 'tempat_agen.kota_id', '=', 'kota.id')
+            ->where('tempat_agen.id', '=', $id)
             ->select('tempat_agen.id', 'tempat_agen.kota_id','kota.nama_kota', 'tempat_agen.tempat_agen')
             ->get();
         return response()->json([
@@ -519,6 +519,63 @@ WHERE 1=1 $andemail  $and");
             'success' => true,
             'message' => 'Data tersedia',
             'data' => $profile
+        ], Response::HTTP_OK);
+    }
+    public function cek_transaksi(Request $request)
+    {
+        $id_user = $request->input('id_user');
+
+        $status_transaksi = DB::table('pemesanan')
+        ->select('order_id')
+            ->where('id_user', $id_user)
+            ->where('status', 'belum bayar')
+            ->get();
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Data tersedia',
+            'data' => $status_transaksi
+        ], Response::HTTP_OK);
+    }
+    public function cetak_tiket(Request $request)
+    {
+        $order_id = $request->input('order_id');
+
+        $cetakTiket = DB::select("select p.*,ta.tempat_agen as asal, tt.tempat_agen as tujuan from pemesanan p 
+left join persediaan_tiket pt on p.id_persediaan_tiket=pt.id 
+left join tempat_agen ta on pt.asal=ta.id
+left join tempat_agen tt on pt.tujuan=tt.id
+where p.order_id = '$order_id'");
+        if($cetakTiket != false){
+            return response()->json([
+                    'success' => true,
+                    'message' => 'Data tersedia',
+                    'data' => $cetakTiket[0]
+                ], Response::HTTP_OK);
+        } else {
+            return response()->json([
+                    'success' => false,
+                    'message' => 'Data tidak tersedia',
+                    'data' => $cetakTiket[0]
+                ], Response::HTTP_OK);
+        }
+        
+    }
+    public function updateTransaksi(Request $request)
+    {
+        $order_id = $request->input('order_id');
+        $save = [
+            'status' => 'lunas'
+            ];
+
+        $updateTransaksi = DB::table('pemesanan')
+            ->where('order_id', $order_id)
+            ->update($save);
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Data berhasil diupdate',
+            'data' => $updateTransaksi
         ], Response::HTTP_OK);
     }
 }
